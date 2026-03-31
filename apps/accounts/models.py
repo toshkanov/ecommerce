@@ -6,7 +6,7 @@ from django.db import models
 from .managers import UserManager
 
 class User(AbstractUser):
-    phone_number = models.CharField(_('Phone_number'),max_length=11, unique=True)
+    phone_number = models.CharField(_('Phone_number'), max_length=11, unique=True)
     address = models.TextField(_('Address'),)
     email = models.EmailField(_('Email'), max_length=100, unique=True)
     username = models.CharField(
@@ -19,7 +19,7 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'email'
     objects = UserManager()
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['phone_number', 'address']
 
     class Meta:
         verbose_name = _('User')

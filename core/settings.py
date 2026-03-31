@@ -27,6 +27,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -35,6 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mptt',
     'django_ckeditor_5',
+    'rest_framework',
+    'drf_spectacular',
 ]
 LOCAL_APPS = [
     'apps.accounts',
@@ -137,77 +140,89 @@ DJRICHTEXTFIELD_CONFIG = {
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS=(os.path.join(BASE_DIR, 'static/'),)
-STATIC_ROOT=BASE_DIR / 'staticfiles/'
+STATIC_URL = 'staticfiles/'
+STATICFILES_DIRS = [BASE_DIR / "static",]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = '/media/'
 MEDIA_ROOT=BASE_DIR / 'media'
 
+JAZZMIN_SETTINGS = {
+    "site_title": "Ecommerce Admin",
+    "site_header": "Javohir Toshkanov",
+    "site_brand": "E-Commerce Uz",
+    "site_logo": "staticfiles/images/Gemini_Generated_Image_9y8qwg9y8qwg9y8q.png" ,  # "images/logo.png" kabi yo'l ko'rsatish mumkin
+    "welcome_sign": "Admin panelga xush kelibsiz!",
+    "copyright": "Toshkanov Javohir Ltd",
 
+    "search_model": ["auth.User", "products.Product"],
+    "user_avatar": None,
 
-customColorPalette = [
-    {
-        'color': 'hsl(4, 90%, 58%)',
-        'label': 'Red'
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "hide_apps": [],
+    "hide_models": [],
+
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "products.Product": "fas fa-shopping-basket",
+        "orders.Order": "fas fa-cart-arrow-down",
+        "accounts.User": "fas fa-user-shield",
     },
-    {
-        'color': 'hsl(340, 82%, 52%)',
-        'label': 'Pink'
-    },
-    {
-        'color': 'hsl(291, 64%, 42%)',
-        'label': 'Purple'
-    },
-]
 
-CKEDITOR_5_CONFIGS = {
-    'default': {
-        'toolbar': ['heading', '|', 'bold', 'italic', 'link',
-                    'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', ],
+    "order_with_respect_to": ["products", "orders", "accounts", "auth"],
 
-    },
-    'extends': {
-        'blockToolbar': [
-            'paragraph', 'heading1', 'heading2', 'heading3',
-            '|',
-            'bulletedList', 'numberedList',
-            '|',
-            'blockQuote',
-        ],
-        'toolbar': ['heading', '|', 'outdent', 'indent', '|', 'bold', 'italic', 'link', 'underline', 'strikethrough',
-        'code','|', 'codeBlock', 'sourceEditing', 'insertImage',
-                    'bulletedList', 'numberedList', 'todoList', '|',  'blockQuote', 'imageUpload', '|',
-                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'mediaEmbed', 'removeFormat',
-                    'insertTable',],
-        'image': {
-            'toolbar': ['imageTextAlternative', '|', 'imageStyle:alignLeft',
-                        'imageStyle:alignRight', 'imageStyle:alignCenter', 'imageStyle:side',  '|'],
-            'styles': [
-                'full',
-                'side',
-                'alignLeft',
-                'alignRight',
-                'alignCenter',
-            ]
+    "topmenu_links": [
+        {"name": "Asosiy", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "Saytni ko'rish", "url": "/", "new_window": True},
+    ],
 
-        },
-        'table': {
-            'contentToolbar': [ 'tableColumn', 'tableRow', 'mergeTableCells',
-            'tableProperties', 'tableCellProperties' ],
-            'formatBlocks': [
-                'tableColumn', 'tableRow', 'mergeTableCells',
-                'tableProperties', 'tableCellProperties'
-            ],
-        },
-        'heading': {
-            'options': [
-                {'model': 'paragraph', 'title': 'Paragraph', 'class': 'ck-heading_paragraph'},
-                {'model': 'heading1', 'view': 'h1', 'title': 'Heading 1', 'class': 'ck-heading_heading1'},
-                {'model': 'heading2', 'view': 'h2', 'title': 'Heading 2', 'class': 'ck-heading_heading2'},
-                {'model': 'heading3', 'view': 'h3', 'title': 'Heading 3', 'class': 'ck-heading_heading3'}
-            ]
-        }
+    "show_ui_builder": True,
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-primary",
+    "accent": "accent-primary",
+    "navbar": "navbar-dark py-2",
+    "no_navbar_border": True,
+    "navbar_fixed": True,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": True,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "flatly",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
     }
 }
 
-CKEDITOR_5_UPLOADS_FOLDER = 'django_ckeditor_5/'
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Your Project API',
+    'DESCRIPTION': 'Your project description',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}
